@@ -184,7 +184,7 @@ class WrappedMediaPlayer internal constructor(
                 val audioFocusRequest = AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK)
                         .setAudioAttributes(
                                 AudioAttributes.Builder()
-                                        .setUsage(if (respectSilence) AudioAttributes.USAGE_NOTIFICATION_RINGTONE else AudioAttributes.USAGE_MEDIA)
+                                        .setUsage(if (respectSilence) AudioAttributes.USAGE_NOTIFICATION_RINGTONE else AudioAttributes.USAGE_ALARM)
                                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                                         .build()
                         )
@@ -355,7 +355,7 @@ class WrappedMediaPlayer internal constructor(
             // automatically switch to earpiece when disconnect bluetooth headphones
             playingRoute != "speakers" -> AudioAttributes.USAGE_VOICE_COMMUNICATION
             respectSilence -> AudioAttributes.USAGE_NOTIFICATION_RINGTONE
-            else -> AudioAttributes.USAGE_MEDIA
+            else -> AudioAttributes.USAGE_ALARM
         }
         player.setAudioAttributes(
                 AudioAttributes.Builder()
