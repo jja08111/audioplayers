@@ -76,13 +76,18 @@ class AudioCache {
     await Future.wait(loadedFiles.values.map(clear));
   }
 
-  Future<Uri> fetchToMemory(String fileName) async {
+  Future<Uri> fetchToMemory(String fileName, {bool isLocal = false}) async {
     if (kIsWeb) {
       final uri = _sanitizeURLForWeb(fileName);
       // We rely on browser caching here. Once the browser downloads this file,
       // the native side implementation should be able to access it from cache.
       await http.get(uri);
       return uri;
+    }
+
+    if (isLocal) {
+      final file = File(fileName);
+      return file.uri;
     }
 
     // read local asset from rootBundle
@@ -110,9 +115,9 @@ class AudioCache {
   /// Loads a single [fileName] to the cache.
   ///
   /// Also returns a [Future] to access that file.
-  Future<Uri> load(String fileName) async {
+  Future<Uri> load(String fileName, {bool isLocal = false}) async {
     if (!loadedFiles.containsKey(fileName)) {
-      loadedFiles[fileName] = await fetchToMemory(fileName);
+      loadedFiles[fileName] = await fetchToMemory(fileName, isLocal: isLocal);
     }
     return loadedFiles[fileName]!;
   }
@@ -121,11 +126,11 @@ class AudioCache {
   ///
   /// Note: this is not available for web, as File doesn't make sense on the
   /// browser!
-  Future<File> loadAsFile(String fileName) async {
+  Future<File> loadAsFile(String fileName, {isLocal = false}) async {
     if (kIsWeb) {
       throw 'This method cannot be used on web!';
     }
-    final uri = await load(fileName);
+    final uri = await load(fileName, isLocal: isLocal);
     return File(uri.toFilePath());
   }
 
