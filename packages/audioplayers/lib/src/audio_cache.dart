@@ -126,7 +126,7 @@ class AudioCache {
   ///
   /// Note: this is not available for web, as File doesn't make sense on the
   /// browser!
-  Future<File> loadAsFile(String fileName, {isLocal = false}) async {
+  Future<File> loadAsFile(String fileName, {bool isLocal = false}) async {
     if (kIsWeb) {
       throw 'This method cannot be used on web!';
     }
